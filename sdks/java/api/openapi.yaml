@@ -1,0 +1,723 @@
+openapi: 3.0.2
+info:
+  contact:
+    email: dev@stromdao.com
+    name: STROMDAO GmbH
+    url: https://corrently.io/
+  description: The PV generation forecast for unmetered PV systems makes it possible
+    to predict production of a PV system on an hourly basis for the next 4 days without
+    having your own metering equipment or system-specific generation data.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  title: SolarEnergyPrediction
+  version: 1.0.0
+servers:
+- description: ""
+  url: https://solarenergyprediction.p.rapidapi.com/
+paths:
+  /v2.0/solar/prediction:
+    description: "The PV generation forecast for unmetered PV systems makes it possible\
+      \ to predict production of a PV system on an hourly basis for the next 4 days\
+      \ without having your own metering equipment or system-specific generation data.\
+      \ \r\n\r\n**Key Features**\r\n- based on quality weather forecast\r\n- solar\
+      \ irradiance prediction based on real-time satellite data\r\n- support of multiple\
+      \ strings, slopes, system losses and azimuths\r\n- hourly forecast up to 96\
+      \ hours (4 days)\r\n- No AI training required. \r\n- Ready for usage in Energy\
+      \ Management Systems "
+    get:
+      description: The PV generation forecast for unmetered PV systems makes it possible
+        to predict production of a PV system on an hourly basis for the next 4 days
+        without having your own metering equipment or system-specific generation data.
+      operationId: prediction
+      parameters:
+      - description: Geocode latitude of pv plant (required if parameter plant or
+          zip is not given).
+        examples:
+          Latitude of STROMDAO HQ:
+            value: "49.3418836"
+        explode: true
+        in: query
+        name: lat
+        required: false
+        schema:
+          format: float
+          type: number
+        style: form
+      - description: Geocode longitude of pv plant (required if parameter plant or
+          zip is not given).
+        examples:
+          longitude:
+            value: "8.8006813"
+        explode: true
+        in: query
+        name: lon
+        required: false
+        schema:
+          format: float
+          type: number
+        style: form
+      - description: Zipcode (postalcode) - works only for Germany. If specified no
+          lat/lon parameter is required.
+        examples:
+          German Postalcode of STROMDAO HQ:
+            value: "69256"
+        explode: true
+        in: query
+        name: zip
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "plane declination degrees, 0 (horizontal) … 90 (vertical)"
+        examples:
+          Typical roof top solar:
+            value: "35"
+          Horiziontal installation:
+            value: "0"
+          Vertical Installation:
+            value: "90"
+        explode: true
+        in: query
+        name: deg
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: "plant installation azimuth, -180 … 180 (-180 = north, -90 =\
+          \ east, 0 = south, 90 = west, 180 = north)"
+        examples:
+          Plant facing south:
+            value: "0"
+          Plant facing west:
+            value: "90"
+          Plant facing east:
+            value: "-90"
+        explode: true
+        in: query
+        name: az
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Installed Watt-Peak  (eq. kWp/1000)
+        examples:
+          "6 kWp PV installation":
+            value: "6000"
+        explode: true
+        in: query
+        name: wp
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: System loss in percent (defaults to 14)
+        examples:
+          Default loss 14%:
+            value: "14"
+        explode: true
+        in: query
+        name: loss
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: "If specified all other query parameters will be taken from the\
+          \ stored value and must not be given with the query string.\r\n\r\nUse as\
+          \ comma separated list of IDs to retrieve a forecast for multiple specifications."
+        explode: true
+        in: query
+        name: plant
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: API Key from rapidapi.com
+        explode: false
+        in: header
+        name: X-RapidAPI-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: API Host to use (should be `solarenergyprediction.p.rapidapi.com`
+          )
+        explode: false
+        in: header
+        name: X-RapidAPI-Host
+        required: true
+        schema:
+          enum:
+          - solarenergyprediction.p.rapidapi.com
+          type: string
+        style: simple
+      - description: "Allows to use SolarPredictionAPI as a plug-in replacement for\
+          \ other APIs.\r\n\r\nSupported decorations:\r\n\r\n| `forecast.solar` |\
+          \ Output will be formated like [https://forecast.solar](http://doc.forecast.solar/doku.php?id=api:estimate#example)\
+          \ |\r\n|----|----|"
+        explode: true
+        in: query
+        name: decoration
+        required: false
+        schema:
+          enum:
+          - forecast.solar
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                'Sample - Decoration: Forecast.solar':
+                  value:
+                    result:
+                      watts:
+                        "2022-08-30 05:00:00": 10
+                        "2022-08-30 06:00:00": 223
+                        "2022-08-30 07:00:00": 407
+                        "2022-08-30 08:00:00": 1004
+                        "2022-08-30 09:00:00": 818
+                        "2022-08-30 10:00:00": 4471
+                        "2022-08-30 11:00:00": 4685
+                        "2022-08-30 12:00:00": 4655
+                        "2022-08-30 13:00:00": 4289
+                        "2022-08-30 14:00:00": 3842
+                        "2022-08-30 15:00:00": 3042
+                        "2022-08-30 16:00:00": 2254
+                        "2022-08-30 17:00:00": 1419
+                        "2022-08-30 18:00:00": 404
+                        "2022-08-31 05:00:00": 2
+                        "2022-08-31 06:00:00": 205
+                        "2022-08-31 07:00:00": 802
+                        "2022-08-31 08:00:00": 1833
+                        "2022-08-31 09:00:00": 2022
+                        "2022-08-31 10:00:00": 3661
+                        "2022-08-31 11:00:00": 5102
+                        "2022-08-31 12:00:00": 5276
+                        "2022-08-31 13:00:00": 3880
+                        "2022-08-31 14:00:00": 4474
+                        "2022-08-31 15:00:00": 3672
+                        "2022-08-31 16:00:00": 2633
+                        "2022-08-31 17:00:00": 1422
+                        "2022-08-31 18:00:00": 399
+                        "2022-09-01 05:00:00": 3
+                        "2022-09-01 06:00:00": 426
+                        "2022-09-01 07:00:00": 1620
+                        "2022-09-01 08:00:00": 2832
+                        "2022-09-01 09:00:00": 3855
+                        "2022-09-01 10:00:00": 4483
+                        "2022-09-01 11:00:00": 3853
+                        "2022-09-01 12:00:00": 2861
+                        "2022-09-01 13:00:00": 4692
+                        "2022-09-01 14:00:00": 4480
+                        "2022-09-01 15:00:00": 3255
+                        "2022-09-01 16:00:00": 807
+                        "2022-09-01 17:00:00": 398
+                        "2022-09-01 18:00:00": 223
+                        "2022-09-02 05:00:00": 2
+                        "2022-09-02 06:00:00": 417
+                        "2022-09-02 07:00:00": 1626
+                        "2022-09-02 08:00:00": 2635
+                        "2022-09-02 09:00:00": 3640
+                        "2022-09-02 10:00:00": 4283
+                        "2022-09-02 11:00:00": 4880
+                        "2022-09-02 12:00:00": 4872
+                        "2022-09-02 13:00:00": 4258
+                        "2022-09-02 14:00:00": 3445
+                        "2022-09-02 15:00:00": 2234
+                        "2022-09-02 16:00:00": 1822
+                        "2022-09-02 17:00:00": 1025
+                        "2022-09-02 18:00:00": 387
+                        "2022-09-03 05:00:00": 2
+                        "2022-09-03 06:00:00": 417
+                        "2022-09-03 07:00:00": 1214
+                        "2022-09-03 08:00:00": 2256
+                        "2022-09-03 09:00:00": 3055
+                        "2022-09-03 10:00:00": 3659
+                        "2022-09-03 11:00:00": 4900
+                        "2022-09-03 12:00:00": 5099
+                        "2022-09-03 13:00:00": 4475
+                        "2022-09-03 14:00:00": 3475
+                        "2022-09-03 15:00:00": 2856
+                        "2022-09-03 16:00:00": 1647
+                        "2022-09-03 17:00:00": 807
+                        "2022-09-03 18:00:00": 193
+                      watt_hours:
+                        "2022-08-30 05:00:00": 10
+                        "2022-08-30 06:00:00": 233
+                        "2022-08-30 07:00:00": 640
+                        "2022-08-30 08:00:00": 1644
+                        "2022-08-30 09:00:00": 2462
+                        "2022-08-30 10:00:00": 6933
+                        "2022-08-30 11:00:00": 11618
+                        "2022-08-30 12:00:00": 16273
+                        "2022-08-30 13:00:00": 20562
+                        "2022-08-30 14:00:00": 24404
+                        "2022-08-30 15:00:00": 27446
+                        "2022-08-30 16:00:00": 29700
+                        "2022-08-30 17:00:00": 31119
+                        "2022-08-30 18:00:00": 31523
+                        "2022-08-31 05:00:00": 2
+                        "2022-08-31 06:00:00": 207
+                        "2022-08-31 07:00:00": 1009
+                        "2022-08-31 08:00:00": 2842
+                        "2022-08-31 09:00:00": 4864
+                        "2022-08-31 10:00:00": 8525
+                        "2022-08-31 11:00:00": 13627
+                        "2022-08-31 12:00:00": 18903
+                        "2022-08-31 13:00:00": 22783
+                        "2022-08-31 14:00:00": 27257
+                        "2022-08-31 15:00:00": 30929
+                        "2022-08-31 16:00:00": 33562
+                        "2022-08-31 17:00:00": 34984
+                        "2022-08-31 18:00:00": 35383
+                        "2022-09-01 05:00:00": 3
+                        "2022-09-01 06:00:00": 429
+                        "2022-09-01 07:00:00": 2049
+                        "2022-09-01 08:00:00": 4881
+                        "2022-09-01 09:00:00": 8736
+                        "2022-09-01 10:00:00": 13219
+                        "2022-09-01 11:00:00": 17072
+                        "2022-09-01 12:00:00": 19933
+                        "2022-09-01 13:00:00": 24625
+                        "2022-09-01 14:00:00": 29105
+                        "2022-09-01 15:00:00": 32360
+                        "2022-09-01 16:00:00": 33167
+                        "2022-09-01 17:00:00": 33565
+                        "2022-09-01 18:00:00": 33788
+                        "2022-09-02 05:00:00": 2
+                        "2022-09-02 06:00:00": 419
+                        "2022-09-02 07:00:00": 2045
+                        "2022-09-02 08:00:00": 4680
+                        "2022-09-02 09:00:00": 8320
+                        "2022-09-02 10:00:00": 12603
+                        "2022-09-02 11:00:00": 17483
+                        "2022-09-02 12:00:00": 22355
+                        "2022-09-02 13:00:00": 26613
+                        "2022-09-02 14:00:00": 30058
+                        "2022-09-02 15:00:00": 32292
+                        "2022-09-02 16:00:00": 34114
+                        "2022-09-02 17:00:00": 35139
+                        "2022-09-02 18:00:00": 35526
+                        "2022-09-03 05:00:00": 2
+                        "2022-09-03 06:00:00": 419
+                        "2022-09-03 07:00:00": 1633
+                        "2022-09-03 08:00:00": 3889
+                        "2022-09-03 09:00:00": 6944
+                        "2022-09-03 10:00:00": 10603
+                        "2022-09-03 11:00:00": 15503
+                        "2022-09-03 12:00:00": 20602
+                        "2022-09-03 13:00:00": 25077
+                        "2022-09-03 14:00:00": 28552
+                        "2022-09-03 15:00:00": 31408
+                        "2022-09-03 16:00:00": 33055
+                        "2022-09-03 17:00:00": 33862
+                        "2022-09-03 18:00:00": 34055
+                      watt_hours_day:
+                        "2022-08-30": 31523
+                        "2022-08-31": 35383
+                        "2022-09-01": 33788
+                        "2022-09-02": 35526
+                        "2022-09-03": 34055
+                    message:
+                      code: 0
+                      type: success
+                      text: compatibility mode from SolarPredictionAPI
+                      info:
+                        place: not resolved
+                        timezone: Europe/Berlin
+                      ratelimit:
+                        period: 3600
+                        limit: 0
+                        remaining: -1
+                Sample - Default Output Format:
+                  value:
+                    input:
+                    - _id: 62f9a26a8d4b76e795ddf429
+                      plant: 9.777174122203707E47
+                      az: "45"
+                      deg: "32"
+                      lat: "49.3418836"
+                      lon: "8.8006813"
+                      loss: "14"
+                      tech: crystSi
+                      wp: "6442"
+                    output:
+                    - date: 2022-08-29T22:00:00.000Z
+                      timestamp: 1661810400000
+                      wh: 0
+                    - date: 2022-08-29T23:00:00.000Z
+                      timestamp: 1661814000000
+                      wh: 0
+                    - date: 2022-08-30T00:00:00.000Z
+                      timestamp: 1661817600000
+                      wh: 0
+                    - date: 2022-08-30T01:00:00.000Z
+                      timestamp: 1661821200000
+                      wh: 0
+                    - date: 2022-08-30T02:00:00.000Z
+                      timestamp: 1661824800000
+                      wh: 0
+                    - date: 2022-08-30T03:00:00.000Z
+                      timestamp: 1661828400000
+                      wh: 0
+                    - date: 2022-08-30T04:00:00.000Z
+                      timestamp: 1661832000000
+                      wh: 0
+                    - date: 2022-08-30T05:00:00.000Z
+                      timestamp: 1661835600000
+                      wh: 9
+                    - date: 2022-08-30T06:00:00.000Z
+                      timestamp: 1661839200000
+                      wh: 213
+                    - date: 2022-08-30T07:00:00.000Z
+                      timestamp: 1661842800000
+                      wh: 390
+                    - date: 2022-08-30T08:00:00.000Z
+                      timestamp: 1661846400000
+                      wh: 960
+                    - date: 2022-08-30T09:00:00.000Z
+                      timestamp: 1661850000000
+                      wh: 782
+                    - date: 2022-08-30T10:00:00.000Z
+                      timestamp: 1661853600000
+                      wh: 4472
+                    - date: 2022-08-30T11:00:00.000Z
+                      timestamp: 1661857200000
+                      wh: 5064
+                    - date: 2022-08-30T12:00:00.000Z
+                      timestamp: 1661860800000
+                      wh: 4452
+                    - date: 2022-08-30T13:00:00.000Z
+                      timestamp: 1661864400000
+                      wh: 4102
+                    - date: 2022-08-30T14:00:00.000Z
+                      timestamp: 1661868000000
+                      wh: 3674
+                    - date: 2022-08-30T15:00:00.000Z
+                      timestamp: 1661871600000
+                      wh: 2909
+                    - date: 2022-08-30T16:00:00.000Z
+                      timestamp: 1661875200000
+                      wh: 2156
+                    - date: 2022-08-30T17:00:00.000Z
+                      timestamp: 1661878800000
+                      wh: 1357
+                    - date: 2022-08-30T18:00:00.000Z
+                      timestamp: 1661882400000
+                      wh: 386
+                    - date: 2022-08-30T19:00:00.000Z
+                      timestamp: 1661886000000
+                      wh: 0
+                    - date: 2022-08-30T20:00:00.000Z
+                      timestamp: 1661889600000
+                      wh: 0
+                    - date: 2022-08-30T21:00:00.000Z
+                      timestamp: 1661893200000
+                      wh: 0
+                    - date: 2022-08-30T22:00:00.000Z
+                      timestamp: 1661896800000
+                      wh: 0
+                    - date: 2022-08-30T23:00:00.000Z
+                      timestamp: 1661900400000
+                      wh: 0
+                    - date: 2022-08-31T00:00:00.000Z
+                      timestamp: 1661904000000
+                      wh: 0
+                    - date: 2022-08-31T01:00:00.000Z
+                      timestamp: 1661907600000
+                      wh: 0
+                    - date: 2022-08-31T02:00:00.000Z
+                      timestamp: 1661911200000
+                      wh: 0
+                    - date: 2022-08-31T03:00:00.000Z
+                      timestamp: 1661914800000
+                      wh: 0
+                    - date: 2022-08-31T04:00:00.000Z
+                      timestamp: 1661918400000
+                      wh: 0
+                    - date: 2022-08-31T05:00:00.000Z
+                      timestamp: 1661922000000
+                      wh: 2
+                    - date: 2022-08-31T06:00:00.000Z
+                      timestamp: 1661925600000
+                      wh: 196
+                    - date: 2022-08-31T07:00:00.000Z
+                      timestamp: 1661929200000
+                      wh: 767
+                    - date: 2022-08-31T08:00:00.000Z
+                      timestamp: 1661932800000
+                      wh: 1753
+                    - date: 2022-08-31T09:00:00.000Z
+                      timestamp: 1661936400000
+                      wh: 1934
+                    - date: 2022-08-31T10:00:00.000Z
+                      timestamp: 1661940000000
+                      wh: 3501
+                    - date: 2022-08-31T11:00:00.000Z
+                      timestamp: 1661943600000
+                      wh: 4879
+                    - date: 2022-08-31T12:00:00.000Z
+                      timestamp: 1661947200000
+                      wh: 5045
+                    - date: 2022-08-31T13:00:00.000Z
+                      timestamp: 1661950800000
+                      wh: 3711
+                    - date: 2022-08-31T14:00:00.000Z
+                      timestamp: 1661954400000
+                      wh: 4278
+                    - date: 2022-08-31T15:00:00.000Z
+                      timestamp: 1661958000000
+                      wh: 3512
+                    - date: 2022-08-31T16:00:00.000Z
+                      timestamp: 1661961600000
+                      wh: 2518
+                    - date: 2022-08-31T17:00:00.000Z
+                      timestamp: 1661965200000
+                      wh: 1360
+                    - date: 2022-08-31T18:00:00.000Z
+                      timestamp: 1661968800000
+                      wh: 382
+                    - date: 2022-08-31T19:00:00.000Z
+                      timestamp: 1661972400000
+                      wh: 0
+                    - date: 2022-08-31T20:00:00.000Z
+                      timestamp: 1661976000000
+                      wh: 0
+                    - date: 2022-08-31T21:00:00.000Z
+                      timestamp: 1661979600000
+                      wh: 0
+                    - date: 2022-08-31T22:00:00.000Z
+                      timestamp: 1661983200000
+                      wh: 0
+                    - date: 2022-08-31T23:00:00.000Z
+                      timestamp: 1661986800000
+                      wh: 0
+                    - date: 2022-09-01T00:00:00.000Z
+                      timestamp: 1661990400000
+                      wh: 0
+                    - date: 2022-09-01T01:00:00.000Z
+                      timestamp: 1661994000000
+                      wh: 0
+                    - date: 2022-09-01T02:00:00.000Z
+                      timestamp: 1661997600000
+                      wh: 0
+                    - date: 2022-09-01T03:00:00.000Z
+                      timestamp: 1662001200000
+                      wh: 0
+                    - date: 2022-09-01T04:00:00.000Z
+                      timestamp: 1662004800000
+                      wh: 0
+                    - date: 2022-09-01T05:00:00.000Z
+                      timestamp: 1662008400000
+                      wh: 3
+                    - date: 2022-09-01T06:00:00.000Z
+                      timestamp: 1662012000000
+                      wh: 408
+                    - date: 2022-09-01T07:00:00.000Z
+                      timestamp: 1662015600000
+                      wh: 1549
+                    - date: 2022-09-01T08:00:00.000Z
+                      timestamp: 1662019200000
+                      wh: 2708
+                    - date: 2022-09-01T09:00:00.000Z
+                      timestamp: 1662022800000
+                      wh: 3687
+                    - date: 2022-09-01T10:00:00.000Z
+                      timestamp: 1662026400000
+                      wh: 4288
+                    - date: 2022-09-01T11:00:00.000Z
+                      timestamp: 1662030000000
+                      wh: 3685
+                    - date: 2022-09-01T12:00:00.000Z
+                      timestamp: 1662033600000
+                      wh: 2736
+                    - date: 2022-09-01T13:00:00.000Z
+                      timestamp: 1662037200000
+                      wh: 4487
+                    - date: 2022-09-01T14:00:00.000Z
+                      timestamp: 1662040800000
+                      wh: 4285
+                    - date: 2022-09-01T15:00:00.000Z
+                      timestamp: 1662044400000
+                      wh: 3113
+                    - date: 2022-09-01T16:00:00.000Z
+                      timestamp: 1662048000000
+                      wh: 771
+                    - date: 2022-09-01T17:00:00.000Z
+                      timestamp: 1662051600000
+                      wh: 380
+                    - date: 2022-09-01T18:00:00.000Z
+                      timestamp: 1662055200000
+                      wh: 213
+                    - date: 2022-09-01T19:00:00.000Z
+                      timestamp: 1662058800000
+                      wh: 0
+                    - date: 2022-09-01T20:00:00.000Z
+                      timestamp: 1662062400000
+                      wh: 0
+                    - date: 2022-09-01T21:00:00.000Z
+                      timestamp: 1662066000000
+                      wh: 0
+                    - date: 2022-09-01T22:00:00.000Z
+                      timestamp: 1662069600000
+                      wh: 0
+                    - date: 2022-09-01T23:00:00.000Z
+                      timestamp: 1662073200000
+                      wh: 0
+                    - date: 2022-09-02T00:00:00.000Z
+                      timestamp: 1662076800000
+                      wh: 0
+                    - date: 2022-09-02T01:00:00.000Z
+                      timestamp: 1662080400000
+                      wh: 0
+                    - date: 2022-09-02T02:00:00.000Z
+                      timestamp: 1662084000000
+                      wh: 0
+                    - date: 2022-09-02T03:00:00.000Z
+                      timestamp: 1662087600000
+                      wh: 0
+                    - date: 2022-09-02T04:00:00.000Z
+                      timestamp: 1662091200000
+                      wh: 0
+                    - date: 2022-09-02T05:00:00.000Z
+                      timestamp: 1662094800000
+                      wh: 2
+                    - date: 2022-09-02T06:00:00.000Z
+                      timestamp: 1662098400000
+                      wh: 399
+                    - date: 2022-09-02T07:00:00.000Z
+                      timestamp: 1662102000000
+                      wh: 1555
+                    - date: 2022-09-02T08:00:00.000Z
+                      timestamp: 1662105600000
+                      wh: 2520
+                    - date: 2022-09-02T09:00:00.000Z
+                      timestamp: 1662109200000
+                      wh: 3481
+                    - date: 2022-09-02T10:00:00.000Z
+                      timestamp: 1662112800000
+                      wh: 4096
+                    - date: 2022-09-02T11:00:00.000Z
+                      timestamp: 1662116400000
+                      wh: 4666
+                    - date: 2022-09-02T12:00:00.000Z
+                      timestamp: 1662120000000
+                      wh: 4659
+                    - date: 2022-09-02T13:00:00.000Z
+                      timestamp: 1662123600000
+                      wh: 4072
+                    - date: 2022-09-02T14:00:00.000Z
+                      timestamp: 1662127200000
+                      wh: 3294
+                    - date: 2022-09-02T15:00:00.000Z
+                      timestamp: 1662130800000
+                      wh: 2136
+                    - date: 2022-09-02T16:00:00.000Z
+                      timestamp: 1662134400000
+                      wh: 1742
+                    - date: 2022-09-02T17:00:00.000Z
+                      timestamp: 1662138000000
+                      wh: 980
+                    - date: 2022-09-02T18:00:00.000Z
+                      timestamp: 1662141600000
+                      wh: 370
+                    - date: 2022-09-02T19:00:00.000Z
+                      timestamp: 1662145200000
+                      wh: 0
+                    - date: 2022-09-02T20:00:00.000Z
+                      timestamp: 1662148800000
+                      wh: 0
+                    - date: 2022-09-02T21:00:00.000Z
+                      timestamp: 1662152400000
+                      wh: 0
+                    - date: 2022-09-02T22:00:00.000Z
+                      timestamp: 1662156000000
+                      wh: 0
+                    - date: 2022-09-02T23:00:00.000Z
+                      timestamp: 1662159600000
+                      wh: 0
+                    - date: 2022-09-03T00:00:00.000Z
+                      timestamp: 1662163200000
+                      wh: 0
+                    - date: 2022-09-03T01:00:00.000Z
+                      timestamp: 1662166800000
+                      wh: 0
+                    - date: 2022-09-03T02:00:00.000Z
+                      timestamp: 1662170400000
+                      wh: 0
+                    - date: 2022-09-03T03:00:00.000Z
+                      timestamp: 1662174000000
+                      wh: 0
+                    - date: 2022-09-03T04:00:00.000Z
+                      timestamp: 1662177600000
+                      wh: 0
+                    - date: 2022-09-03T05:00:00.000Z
+                      timestamp: 1662181200000
+                      wh: 2
+                    - date: 2022-09-03T06:00:00.000Z
+                      timestamp: 1662184800000
+                      wh: 399
+                    - date: 2022-09-03T07:00:00.000Z
+                      timestamp: 1662188400000
+                      wh: 1161
+                    - date: 2022-09-03T08:00:00.000Z
+                      timestamp: 1662192000000
+                      wh: 2157
+                    - date: 2022-09-03T09:00:00.000Z
+                      timestamp: 1662195600000
+                      wh: 2921
+                    - date: 2022-09-03T10:00:00.000Z
+                      timestamp: 1662199200000
+                      wh: 3499
+                    - date: 2022-09-03T11:00:00.000Z
+                      timestamp: 1662202800000
+                      wh: 4686
+                    - date: 2022-09-03T12:00:00.000Z
+                      timestamp: 1662206400000
+                      wh: 4876
+                    - date: 2022-09-03T13:00:00.000Z
+                      timestamp: 1662210000000
+                      wh: 4280
+                    - date: 2022-09-03T14:00:00.000Z
+                      timestamp: 1662213600000
+                      wh: 3323
+                    - date: 2022-09-03T15:00:00.000Z
+                      timestamp: 1662217200000
+                      wh: 2731
+                    - date: 2022-09-03T16:00:00.000Z
+                      timestamp: 1662220800000
+                      wh: 1575
+                    - date: 2022-09-03T17:00:00.000Z
+                      timestamp: 1662224400000
+                      wh: 771
+                    - date: 2022-09-03T18:00:00.000Z
+                      timestamp: 1662228000000
+                      wh: 184
+                    - date: 2022-09-03T19:00:00.000Z
+                      timestamp: 1662231600000
+                      wh: 0
+                    - date: 2022-09-03T20:00:00.000Z
+                      timestamp: 1662235200000
+                      wh: 0
+                    - date: 2022-09-03T21:00:00.000Z
+                      timestamp: 1662238800000
+                      wh: 0
+          description: 'SolarEnergy Prediction for the upcoming 4 days.  '
+      summary: Retrieve PV Forecast without metering
+      x-accepts: application/json
+    servers:
+    - description: Default RapidAPI
+      url: https://solarenergyprediction.p.rapidapi.com/
+    summary: AI-based photovoltaic power prediction for PV plants. Powered by our
+      industry-leading irradiance and real-time weather data.
+components:
+  schemas: {}
+  securitySchemes:
+    RapidAPI:
+      description: RapidAPI  App or Organization Key.
+      in: header
+      name: X-RapidAPI-Key
+      type: apiKey
+

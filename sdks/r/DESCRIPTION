@@ -1,0 +1,15 @@
+Package: openapi
+Title: R Package Client for SolarEnergyPrediction
+Version: 1.0.0
+Author: person("STROMDAO GmbH", email = "dev@stromdao.com", role = c("aut", "cre"))
+Maintainer: STROMDAO GmbH <dev@stromdao.com>
+Description: The PV generation forecast for unmetered PV systems makes it possible to predict production of a PV system on an hourly basis for the next 4 days without having your own metering equipment or system-specific generation data.
+URL: https://github.com/GIT_USER_ID/GIT_REPO_ID
+BugReports: https://github.com/GIT_USER_ID/GIT_REPO_ID/issues
+Depends: R (>= 3.3)
+Encoding: UTF-8
+License: Apache 2.0
+LazyData: true
+Suggests: testthat
+Imports: jsonlite, httr, R6, base64enc
+RoxygenNote: 7.2.0
